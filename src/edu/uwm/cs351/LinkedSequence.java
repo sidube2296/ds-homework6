@@ -297,19 +297,17 @@ public class LinkedSequence<E> implements Cloneable
 	}
 	
 	/**
-	 * Add a new element to this sequence, before the current element (if any). 
-	 * If the new element would take this sequence beyond its current capacity,
-	 * then the capacity is increased before adding the new element.
+	 * Insert a new element into this cyclic linked list, before the current element (if any).
 	 * @param element
-	 *   the new element that is being added
+	 *   The new element to be added.
 	 * @postcondition
-	 *   A new copy of the element has been added to this sequence. If there was
-	 *   a current element, then the new element is placed before the current
-	 *   element. If there was no current element, then the new element is placed
-	 *   at the end of the sequence. In all cases, the new element becomes the
-	 *   new current element of this sequence. 
+	 *   A new copy of the element has been added to this list. If there was a current element, 
+	 *   the new element is placed immediately before the current element. If there was no current 
+	 *   element, the new element is inserted at the end of the list (just before the dummy node 
+	 *   in the cyclic structure). In either case, the new element becomes the new current element.
+	 *   The list retains its cyclic structure after insertion.
 	 * @exception OutOfMemoryError
-	 *   Indicates insufficient memory for increasing the sequence.
+	 *   Thrown if there is insufficient memory to add the new element.
 	 **/
 	public void insert(E element) {
 		assert wellFormed() : "Invariant failed at start of insert";
