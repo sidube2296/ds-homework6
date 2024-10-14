@@ -92,18 +92,58 @@ public class LinkedSequence<E> implements Cloneable
 	private boolean wellFormed() {
 		// Invariant:
 		// 1. tail node is not null, and the dummy (next after tail) should not be null either.
+		if (tail == null) {
+			return report("Tail node is null");
+		}
+		if (tail.next == null || tail.next.data != tail.next) {
+	        return report("Dummy node's data do not point to itself or is null");
+		}
+		if (tail.next == null) {
+			return report("Node is not cyclic");
+		}
+
 		// 2. The dummy node's data should be itself.
+		if (tail.next.data != null && tail.next.data != tail.next) {
+			return report("Dummy node's data is incorrect");
+		}
+
 		// 3. list must be in the form of a cycle from tail back to tail
+		Node<E> slow = tail.next;
+		Node<E> fast = tail.next;
+		
+		while (slow != tail && fast.next != null && fast.next != tail && fast.next.next != null) {
+			slow = slow.next;
+			fast = fast.next.next;
+			
+			if (slow == fast) {
+				break;
+			}
+		}
+
+		if (fast != tail && fast.next != tail) {
+			return report("List is not properly cyclic");
+		}
+
 		// 4. size is number of nodes in list, other than the dummy
+		int count = 0;
+		Node<E> current = tail.next;
+		while (current != tail) {
+			count++;
+			current = current.next;
+		}
+		if (count != size) {
+			return report("Size is not equal to the number of nodes");
+		}
+
 		// 5. precursor points to a node in the list (possibly the dummy).
-		
-		// Implementation:
-		// Do multiple checks: each time returning false if a problem is found.
-		// We recommend Floyd's tortoise and hare algorithm for detecting cycles.
-		// (You need to modify it so that the hare doesn't go past the tail.)
-		
-		// TODO: Implement the five checks, not necessarily in that order.
-		
+		Node<E> check = tail.next;
+		while (check != tail) {
+			if (precursor == check) break;
+			check = check.next;
+		}
+		if (precursor != tail && precursor != check) {
+			return report("Precursor does not point to the node in the list");
+		}
 		// If no problems found, then return true:
 		return true;
 	}
