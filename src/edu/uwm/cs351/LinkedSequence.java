@@ -162,6 +162,15 @@ public class LinkedSequence<E> implements Cloneable
 	public LinkedSequence( )
 	{
 		// TODO: initialize data structure
+		Node<E> dummy = new Node<E>(); // Creating a dummy node
+		
+		dummy.data = (E) dummy;
+		tail=dummy;
+		tail.next = dummy;
+		precursor = dummy;
+		
+		size = 0; 
+
 		assert wellFormed() : "invariant failed in constructor";
 	}
 
@@ -176,12 +185,146 @@ public class LinkedSequence<E> implements Cloneable
 		assert wellFormed() : "invariant wrong at start of size()";
 		// TODO: Implemented by student.
 		// This method shouldn't modify any fields, hence no assertion at end
-		return 0;
+		return size;
 	}
 
 	// TODO: All the sequence methods with documentation.
 	// You may copy anything useful from Homework #4.
 	// Just make sure that the code doesn't refer to "Ball".
+
+	/**
+	 * Set the current element at the front of this sequence.
+	 * @param - none
+	 * @postcondition
+	 *   The front element of this sequence is now the current element (but 
+	 *   if this sequence has no elements at all, then there is no current 
+	 *   element).
+	 **/ 
+	public void start() {
+		assert wellFormed() : "invariant wrong at start of start()";
+		precursor = tail.next; // Move precursor to dummy node
+		assert wellFormed() : "invariant wrong at end of start()";
+    }
+
+	/**
+	 * Accessor method to determine whether this sequence has a specified 
+	 * current element that can be retrieved with the 
+	 * getCurrent method. 
+	 * @param - none
+	 * @return
+	 *   true (there is a current element) or false (there is no current element at the moment)
+	 **/
+	public boolean isCurrent() {
+		// TODO Auto-generated method stub
+		assert wellFormed() : "invariant wrong at start of isCurrent()";
+	    // If precursor exists and points to a valid current element (not dummy) return true
+	    return ( precursor.next != tail.next);
+
+	}
+	
+	/**
+	 * Accessor method to get the current element of this sequence. 
+	 * @param - none
+	 * @precondition
+	 *   isCurrent() returns true.
+	 * @return
+	 *   the current element of this sequence
+	 * @exception IllegalStateException
+	 *   Indicates that there is no current element, so 
+	 *   getCurrent may not be called.
+	 **/
+	public E getCurrent() throws IllegalStateException {
+		assert wellFormed() : "invariant worng at start of getCurrent()";
+		// TODO Auto-generated method stub
+		if (!isCurrent()) throw new IllegalStateException("No current element");
+		return precursor.next.data; // Return data of the current node
+    }
+		
+	/**
+	 * Move forward, so that the current element is now the next element in
+	 * this sequence.
+	 * @param - none
+	 * @precondition
+	 *   isCurrent() returns true. 
+	 * @postcondition
+	 *   If the current element was already the end element of this sequence 
+	 *   (with nothing after it), then there is no longer any current element. 
+	 *   Otherwise, the new element is the element immediately after the 
+	 *   original current element.
+	 * @exception IllegalStateException
+	 *   Indicates that there is no current element, so 
+	 *   advance may not be called.
+	 **/
+	public void advance() {
+		assert wellFormed() : "Invariant wrong at start of advance()";
+		// TODO Auto-generated method stub
+		if (!isCurrent()) throw new IllegalStateException("No current element to advance");
+        precursor = precursor.next;
+		assert wellFormed() : "Invariant wrong at end of advance()";
+	}
+
+	/**
+	 * Remove the current element from this sequence.
+	 * @param - none
+	 * @precondition
+	 *   isCurrent() returns true.
+	 * @postcondition
+	 *   The current element has been removed from this sequence, and the 
+	 *   following element (if there is one) is now the new current element. 
+	 *   If there was no following element, then there is now no current 
+	 *   element.
+	 * @exception IllegalStateException
+	 *   Indicates that there is no current element, so 
+	 *   removeCurrent may not be called. 
+	 **/
+	public void removeCurrent() {
+		assert wellFormed() : "Invariant wrong at start of removeCurrent()";
+		// TODO Auto-generated method stub
+		assert wellFormed() : "Invariant wrong at end of removeCurrent()";
+		
+	}
+	/**
+	 * Add a new element to this sequence, before the current element (if any). 
+	 * If the new element would take this sequence beyond its current capacity,
+	 * then the capacity is increased before adding the new element.
+	 * @param element
+	 *   the new element that is being added
+	 * @postcondition
+	 *   A new copy of the element has been added to this sequence. If there was
+	 *   a current element, then the new element is placed before the current
+	 *   element. If there was no current element, then the new element is placed
+	 *   at the end of the sequence. In all cases, the new element becomes the
+	 *   new current element of this sequence. 
+	 * @exception OutOfMemoryError
+	 *   Indicates insufficient memory for increasing the sequence.
+	 **/
+	public void insert(E element) {
+		assert wellFormed() : "Invariant failed at start of insert";
+		// TODO Auto-generated method stub
+		assert wellFormed() : "Invariant failed at end of insert";
+		
+	}
+	/**
+	 * Add a new element to this sequence, before the current element (if any). 
+	 * If the new element would take this sequence beyond its current capacity,
+	 * then the capacity is increased before adding the new element.
+	 * @param element
+	 *   the new element that is being added
+	 * @postcondition
+	 *   A new copy of the element has been added to this sequence. If there was
+	 *   a current element, then the new element is placed before the current
+	 *   element. If there was no current element, then the new element is placed
+	 *   at the end of the sequence. In all cases, the new element becomes the
+	 *   new current element of this sequence. 
+	 * @exception OutOfMemoryError
+	 *   Indicates insufficient memory for increasing the sequence.
+	 **/
+	public void insertAll(LinkedSequence<E> se) {
+		assert wellFormed() : "Invariant failed at start of insertAll";
+		// TODO Auto-generated method stub
+		assert wellFormed() : "Invariant failed at end of inserAll";	
+		
+	}
 
 	/**
 	 * Generate a copy of this sequence.
@@ -357,4 +500,5 @@ public class LinkedSequence<E> implements Cloneable
 			return r.getCursor();
 		}
 	}
+
 }
