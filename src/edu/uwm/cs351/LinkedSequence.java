@@ -69,17 +69,20 @@ public class LinkedSequence<E> implements Cloneable
 
 	/** Return the head node from the data structure since we do not have a head field. */
 	private Node<E> getHead() {
-		return null; // TODO
+		if (tail == null) return null;
+        return tail.next.next; 
 	}
 	
 	/** Return the dummy node from the data structure since we do not have a dummy field. */
 	private Node<E> getDummy() {
-		return null; // TODO
+		return tail != null ? tail.next : null;
 	}
 
 	/** Return the cursor from the data structure since we do not have a cursor field. */
 	private Node<E> getCursor() {
-		return null; // TODO
+		if (precursor == null) return getHead();
+        return precursor.next;
+        
 	}
 	
 	
