@@ -193,13 +193,15 @@ public class LinkedSequence<E> implements Cloneable
 	// Just make sure that the code doesn't refer to "Ball".
 
 	/**
-	 * Set the current element at the front of this sequence.
-	 * @param - none
+	 * Move the cursor to the start of this cyclic linked list
+	 * @param none
 	 * @postcondition
-	 *   The front element of this sequence is now the current element (but 
-	 *   if this sequence has no elements at all, then there is no current 
-	 *   element).
-	 **/ 
+	 *   The first element of this cyclic linked list is now the current element, which means
+	 *   the cursor will point to the element after the dummy node (if the list is non-empty).
+	 *   If the list is empty (i.e., only the dummy node exists), the precursor is moved to the dummy node.
+	 *   The list maintains its cyclic structure, where the first element is located right after 
+	 *   the tail's next reference.
+	 **/
 	public void start() {
 		assert wellFormed() : "invariant wrong at start of start()";
 		precursor = tail.next; // Move precursor to dummy node
@@ -241,19 +243,17 @@ public class LinkedSequence<E> implements Cloneable
     }
 		
 	/**
-	 * Move forward, so that the current element is now the next element in
-	 * this sequence.
-	 * @param - none
+	 * Move the cursor forward to the next element in this cyclic linked list.
+	 * @param none
 	 * @precondition
-	 *   isCurrent() returns true. 
+	 *   isCurrent() must return true, meaning there is a current element.
 	 * @postcondition
-	 *   If the current element was already the end element of this sequence 
-	 *   (with nothing after it), then there is no longer any current element. 
-	 *   Otherwise, the new element is the element immediately after the 
-	 *   original current element.
+	 *   If the current element was the last element in the list (right before the dummy node),
+	 *   the precursor will now point to dummynode, indicating there is no current element. 
+	 *   Otherwise, the cursor will move to the element immediately after the current element.
+	 *   The precursor is updated to follow the cursor.
 	 * @exception IllegalStateException
-	 *   Indicates that there is no current element, so 
-	 *   advance may not be called.
+	 *   Thrown if there is no current element, preventing the advance operation.
 	 **/
 	public void advance() {
 		assert wellFormed() : "Invariant wrong at start of advance()";
@@ -264,25 +264,38 @@ public class LinkedSequence<E> implements Cloneable
 	}
 
 	/**
-	 * Remove the current element from this sequence.
-	 * @param - none
+	 * Remove the current element from this cyclic linked list.
+	 * @param none
 	 * @precondition
-	 *   isCurrent() returns true.
+	 *   isCurrent() must return true, meaning there is a valid current element to remove.
 	 * @postcondition
-	 *   The current element has been removed from this sequence, and the 
-	 *   following element (if there is one) is now the new current element. 
-	 *   If there was no following element, then there is now no current 
-	 *   element.
+	 *   The current element has been removed from this list. The element immediately following 
+	 *   the removed element (if one exists) becomes the new current element. 
+	 *   If the removed element was the only element, or there is no following element, 
+	 *   the cursor becomes null, indicating there is no current element. The list retains 
+	 *   its cyclic structure after removal.
 	 * @exception IllegalStateException
-	 *   Indicates that there is no current element, so 
-	 *   removeCurrent may not be called. 
+	 *   Thrown if there is no current element to remove, preventing the operation.
 	 **/
 	public void removeCurrent() {
 		assert wellFormed() : "Invariant wrong at start of removeCurrent()";
-		// TODO Auto-generated method stub
-		assert wellFormed() : "Invariant wrong at end of removeCurrent()";
 		
+		Node<E> current = precursor.next; 
+		precursor.next = current.next;     
+		size--;                           
+
+		if (current == tail) {            
+		    tail = precursor;              
+		}
+
+		if (size == 0) {                
+		    tail.next = tail;             
+		    precursor = tail;            
+		}
+		
+		assert wellFormed() : "Invariant wrong at end of removeCurrent()";
 	}
+	
 	/**
 	 * Add a new element to this sequence, before the current element (if any). 
 	 * If the new element would take this sequence beyond its current capacity,
@@ -301,8 +314,20 @@ public class LinkedSequence<E> implements Cloneable
 	public void insert(E element) {
 		assert wellFormed() : "Invariant failed at start of insert";
 		// TODO Auto-generated method stub
+		Node<E> newNode = new Node<>(element, getDummy());
+        if (size == 0) {
+            precursor.next = newNode;
+            tail = newNode; 
+        } else {
+            newNode.next = precursor.next;
+            precursor.next = newNode; 
+           
+            if (precursor == tail) {
+                tail = newNode;
+            }
+        }
+        size++;
 		assert wellFormed() : "Invariant failed at end of insert";
-		
 	}
 	/**
 	 * Add a new element to this sequence, before the current element (if any). 
