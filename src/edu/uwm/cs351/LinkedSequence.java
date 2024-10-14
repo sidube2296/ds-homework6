@@ -280,19 +280,23 @@ public class LinkedSequence<E> implements Cloneable
 	public void removeCurrent() {
 		assert wellFormed() : "Invariant wrong at start of removeCurrent()";
 		
-		Node<E> current = precursor.next; 
-		precursor.next = current.next;     
-		size--;                           
+		if (!isCurrent()) {
+	        throw new IllegalStateException("No current element to remove");
+	    }
 
-		if (current == tail) {            
-		    tail = precursor;              
-		}
+	    Node<E> current = precursor.next;
+	    if (current == tail) {
+	        tail = precursor;
+	    }
+	    
+	    precursor.next = current.next;
+	    size--; 
 
-		if (size == 0) {                
-		    tail.next = tail;             
-		    precursor = tail;            
-		}
-		
+	    if (size == 0) {
+	        tail.next = tail;
+	        precursor=tail;
+	    }
+
 		assert wellFormed() : "Invariant wrong at end of removeCurrent()";
 	}
 	
@@ -379,12 +383,43 @@ public class LinkedSequence<E> implements Cloneable
 			throw new RuntimeException
 			("This class does not implement Cloneable");
 		}
+		
 
 		// TODO: Implemented by student.
 		// Now do the hard work of cloning the list.
 		// Similar to Homework #4, setting result.precursor requires an "if"
 		// It's possible to handle the dummy without a second if or an unsafe cast.
 		// but it's OK to have a second if and/or a cast to handle this.
+		
+		// Handle empty sequence
+        if (size == 0) {
+            result.tail = new Node<E>();
+            result.tail.data = (E) result.tail;
+            result.tail.next = result.precursor = result.tail;
+            result.size = 0;
+            return result;
+        }
+        
+        // Clone the nodes
+        Node<E> currentOriginal = tail.next.next;  // Starting after the dummy node
+        Node<E> dummyClone = new Node<>();         // Creating the dummy node for the clone
+        dummyClone.data = (E) dummyClone;          // Setting dummyClone's data to itself
+        Node<E> currentClone = dummyClone;         // Pointing to the current node in the cloned list
+        result.tail = dummyClone;                 
+
+        while (currentOriginal != tail.next) {     
+            currentClone = currentClone.next = new Node<>(currentOriginal.data, null);
+            result.precursor = (currentOriginal == precursor) ? currentClone : result.precursor;
+            currentOriginal = currentOriginal.next;  
+        }
+
+        // Connect the last node to the dummy in the cloned list and set the tail
+        currentClone.next = dummyClone;
+        result.tail = currentClone;              
+        result.precursor = (precursor == tail.next) ? result.tail.next : result.precursor;
+        result.size = size;  // Copy the size of the original list to the cloned list
+
+
 		assert wellFormed() : "invariant wrong at end of clone()";
 		assert result.wellFormed() : "invariant wrong for result of clone()";
 		return result;
