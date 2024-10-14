@@ -349,6 +349,24 @@ public class LinkedSequence<E> implements Cloneable
 	public void insertAll(LinkedSequence<E> se) {
 		assert wellFormed() : "Invariant failed at start of insertAll";
 		// TODO Auto-generated method stub
+		if (se == null || se.size == 0) return;
+
+
+		LinkedSequence<E> copy = new LinkedSequence<>();
+		Node<E> nextNode = precursor.next;
+		for (Node<E> current = se.getDummy().next; current != se.getDummy(); current = current.next) {
+		    copy.insert(current.data);
+		    copy.advance();
+		}
+		
+		for (Node<E> current = copy.getDummy().next; current != copy.getDummy(); current = current.next, size++) {
+			Node<E> newNode = new Node<>(current.data, null);
+			precursor.next = newNode;
+		    if (precursor == tail) tail = newNode;
+		    precursor = newNode;
+		}
+		precursor.next = nextNode;
+		
 		assert wellFormed() : "Invariant failed at end of inserAll";	
 		
 	}
