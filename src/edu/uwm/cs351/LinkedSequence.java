@@ -35,12 +35,32 @@ public class LinkedSequence<E> implements Cloneable
 	// It should have a constructor or two (at least the default constructor) but no methods.
 	// The no-argument constructor can construct a dummy node if you would like.
 	// The fields of Node should have "default" access (neither public, nor private)
+	private static class Node<T> {
+		T data; //The data contained in the node
+		Node<T> next; // The reference to the next node
+		
+		// Default constructor for a dummy node
+		Node() {
+            this.data = null;
+            this.next = this;  // Point to itself
+		}
+		// Constructor with data and next node reference
+		Node(T data, Node<T> next) {
+			this.data = data;
+			this.next = next;
+		}
+		
+        }
 
 	
 	// TODO: Declare the private fields of Sequences:
 	// One for the tail, one for the size and one for the precursor.
 	// Do not declare any other fields.
 	// In particular do *NOT* declare a "dummy" field.  The dummy should be a model field.
+	
+	private Node<E> tail;
+	private Node<E> precursor;
+	private int size;
 	
 	/// Model fields:
 	// These are the conceptual fields that are computed from the concrete fields.
@@ -113,6 +133,7 @@ public class LinkedSequence<E> implements Cloneable
 		assert wellFormed() : "invariant wrong at start of size()";
 		// TODO: Implemented by student.
 		// This method shouldn't modify any fields, hence no assertion at end
+		return 0;
 	}
 
 	// TODO: All the sequence methods with documentation.
@@ -294,4 +315,3 @@ public class LinkedSequence<E> implements Cloneable
 		}
 	}
 }
-
